@@ -5,7 +5,7 @@ from starlette import status
 from src import crud
 from src.db import get_database
 from src.dbmodels import TodoItemInDB
-from src.models import TodoItem, TodoItemIn
+from src.models import TodoItem, TodoItemIn, TodoItemUpdate
 
 router = APIRouter()
 
@@ -47,3 +47,13 @@ async def delete_todo_api(id: int, database: databases.Database = Depends(get_da
 
     await crud.delete_todo(id, database)
     return None
+
+
+@router.patch('/todos/{id}', response_model=TodoItem, status_code=status.HTTP_200_OK, tags=["ToDo"])
+async def update_todo_api(id: int, update: TodoItemUpdate, database: databases.Database = Depends(get_database)):
+    todo = await crud.get_todo(id)
+    if not todo:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item Not Found")
+
+    updated_todo = await crud.update_todo(id, update.__dict__, database)
+    return updated_todo

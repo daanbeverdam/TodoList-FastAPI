@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List
 
 from databases import Database
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, update
 
 from src.db import get_database
 from src.dbmodels import TodoItemInDB
@@ -47,3 +47,10 @@ async def is_todo_exist(id: int, db: Database = get_database()) -> bool:
 async def delete_todo(id: int, db: Database = get_database()) -> None:
     await db.execute(TodoItemInDB.delete(TodoItemInDB.c.id == id))
     return None
+
+
+async def update_todo(id, todo_update, db: Database = get_database()) -> None:
+    # quick hack to update todos, never use this in a serious (production) application
+    db_update = update(TodoItemInDB).values(todo_update).where(TodoItemInDB.c.id==id)
+    await db.execute(db_update)
+    return await get_todo(id)
