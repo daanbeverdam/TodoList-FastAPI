@@ -12,13 +12,13 @@ ENV PYTHONUNBUFFERED 1
 COPY ./requirements.txt /code/requirements.txt
 
 # install dependencies
-RUN set -eux \
-    && apk add --no-cache --virtual .build-deps build-base \
-        libressl-dev libffi-dev gcc musl-dev python3-dev \
-        mariadb-dev mysql-client netcat-openbsd\
-    && pip install --upgrade pip setuptools wheel \
-    && pip install -r /code/requirements.txt \
-    && rm -rf /root/.cache/pip
+RUN set -eux 
+RUN apk add --no-cache --virtual .build-deps build-base \
+    libressl-dev libffi-dev gcc musl-dev python3-dev \
+    mariadb-dev mysql-client netcat-openbsd\
+RUN pip install --upgrade pip setuptools wheel \
+RUN pip install -r /code/requirements.txt \
+RUN rm -rf /root/.cache/pip
 
 # copy project
 COPY . /code
